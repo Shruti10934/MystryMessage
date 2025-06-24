@@ -1,61 +1,117 @@
 "use client";
-import {  signIn,  } from "next-auth/react";
+
+import { Button } from "@/components/ui/button";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { signInSchema } from "@/schemas/signInSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
-export default function Component() {
+const page = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
+  const router = useRouter();
+
+  // zod implementation
+
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+        identifier: "",
+        password: "",
+    }
   });
 
-  const handleChanges = (e) => {
-    const { name, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [name]: value }));
-  };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    const res = await signIn("credentials", {
-      email: credentials.email,
-      password: credentials.password,
-      redirect: false,
-    });
-
-    if (res?.error)
-      console.error(
-        res.error === "CredentialsSignin"
-          ? "Invalid email or password"
-          : res.error
-      );
+  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    const res = await signIn('credentials', {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password
+    })
+    console.log("Result ", res);
+    if(res?.error){
+        console.log(res.error)
+        toast("Incorrect username or password")
+    }
+    
+    if(res?.url){
+        router.replace("/dashboard")
+    }
   };
 
   return (
-        <>
-          Not signed in <br />
-          <form onSubmit={handleLogin}></form>
-          <label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              onChange={handleChanges}
-              required
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <div className="text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
+            Join Mystery Message
+          </h1>
+          <p className="mb-4 font-semibold">Sign in to start your anonymous adventure</p>
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            
+            <FormField
+              name="identifier"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email/Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="email/username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            Email
-          </label>
-          <label>
-            <input
-              id="password"
+            <FormField
               name="password"
-              type="password"
-              onChange={handleChanges}
-              required
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="password" type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            password
-          </label>
-          <button onClick={() => signIn()}>Sign in</button>
-        </>
-  )
-}
+            <div className="text-center">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
+                    wait
+                  </>
+                ) : (
+                  "Sign In"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </div>
+  );
+};
+
+export default page;

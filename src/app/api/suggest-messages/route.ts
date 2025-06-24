@@ -1,22 +1,36 @@
-import { openai } from "@ai-sdk/openai";
-import { streamText } from "ai";
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { NextRequest, NextResponse } from 'next/server';
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 50;
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const prompt =
-      "Create a list of three open-ended and engaging questions formatted in a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal and sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example your output should be structured like this: 'What's a hobby you've recently started? || If you could have dinner with any historical figures, who would it be? || What's a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curosity, and contribute to a positive and welcoming conversational environment.";
+    const model = "gemini-1.5-flash";
+    const prompt = "Create a list of three open-ended and engaging questions formatted in a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal and sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example your output should be structured like this: 'What's a hobby you've recently started? || If you could have dinner with any historical figures, who would it be? || What's a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curosity, and contribute to a positive and welcoming conversational environment."
 
-    const result = streamText({
-      model: openai("gpt-3.5-turbo-instruct"),
-      prompt,
+
+    // Get the generative model
+    const geminiModel = genAI.getGenerativeModel({ model });
+
+    // Generate content
+    const result = await geminiModel.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+
+    return NextResponse.json({ 
+      response: text,
+      success: true 
     });
 
-    return result.toDataStreamResponse();
   } catch (error) {
-    console.error("An unexpected error occurred ", error);
-    throw error;
+    console.error('Gemini API Error:', error);
+    return NextResponse.json(
+      { 
+        error: 'Failed to generate response',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
   }
 }
