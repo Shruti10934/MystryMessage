@@ -15,7 +15,6 @@ import axios, { AxiosError } from "axios";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -48,13 +47,11 @@ function UserDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
 
-  const router = useRouter();
-
 const handleDeleteMessage = async (messageId: string) => {
   try {
     const response = await axios.delete(`/api/delete-message/${messageId}`);
     toast.success(response.data.message);
-    setMessages(messages.filter(message => message._id !== messageId));
+    setMessages(messages.filter(message => message._id.toString() !== messageId));
   } catch (error) {
     const axiosError = error as AxiosError<ApiResponse>;
     toast.error(
@@ -195,12 +192,12 @@ const handleDeleteMessage = async (messageId: string) => {
       </Button>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
         {messages.length > 0 ? (
-          messages.map((message, index) => (
+          messages.map((message) => (
             <MessageCard
-              key={message._id}
+              key={message._id.toString()}
               message={message.content}
               createdAt={message.createdAt}
-              onMessageDelete={() => {handleDeleteMessage(message._id)}}
+              onMessageDelete={() => {handleDeleteMessage(message._id.toString())}}
             />
           ))
         ) : (
