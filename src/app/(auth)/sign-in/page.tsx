@@ -12,16 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/schemas/signInSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
-const page = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const Page = () => {
 
   const router = useRouter();
 
@@ -94,16 +91,11 @@ const page = () => {
             <div className="text-center">
               <Button
                 type="submit"
-                disabled={isSubmitting}
+      
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                    wait
-                  </>
-                ) : (
-                  "Sign In"
-                )}
+                
+                  Sign In
+              
               </Button>
             </div>
           </form>
@@ -113,4 +105,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

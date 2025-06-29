@@ -23,7 +23,7 @@ import { toast } from "sonner";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod";
 
-const page = () => {
+const Page = () => {
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
@@ -174,4 +174,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

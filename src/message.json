@@ -1,15 +1,18 @@
 [
     {
+        "id": 1,
         "title": "message from user123",
         "content": "Hey, how are you doing today?",
         "received": "10 minutes ago"
     },
     {
+        "id": 2,
         "title": "message from SecretAdmirer",
         "content": "I really liked your recent post",
         "received": "2 hours ago"
     },
     {
+        "id": 3,
         "title": "message from Guest",
         "content": "Do you have any book recommedations?",
         "received": "3 hours ago"
