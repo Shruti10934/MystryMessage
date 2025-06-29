@@ -1,17 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useDebounceCallback } from "usehooks-ts";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { signUpSchema } from "@/schemas/signUpSchema";
-import axios, { AxiosError } from "axios";
-import { ApiResponse } from "@/types/ApiResponse";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -21,7 +10,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { signUpSchema } from "@/schemas/signUpSchema";
+import { ApiResponse } from "@/types/ApiResponse";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios, { AxiosError } from "axios";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useDebounceCallback } from "usehooks-ts";
+import * as z from "zod";
 
 const page = () => {
   const [username, setUsername] = useState("");

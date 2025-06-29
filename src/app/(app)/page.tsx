@@ -1,16 +1,14 @@
 'use client';
 
-import { Mail } from 'lucide-react'; 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Autoplay from 'embla-carousel-autoplay';
 import messages from '@/message.json';
+import Autoplay from 'embla-carousel-autoplay';
+import { Mail } from 'lucide-react';
 
 import {
   Carousel,
   CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
+  CarouselItem
 } from '@/components/ui/carousel';
 
 export default function Home() {
